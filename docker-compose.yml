@@ -1,0 +1,34 @@
+# not for production usage
+# infrastructure such as mysql
+version: '3.9'
+
+volumes:
+    dev-datavolume:
+      driver: local
+    
+services:
+  mysql:
+    container_name: dev_mysql
+    restart: always
+    image: mysql:8.0.33  #prod would be mysql/mysql-server:somethings
+    ports:
+      - 3306:3306
+
+    networks:
+      - backend
+
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_HOST: '%' # allow root login from any host
+      MYSQL_USER: 'test'
+      MYSQL_PASS: 'pass'
+    volumes:
+      - dev-datavolume:/var/lib/mysql
+      - ./dev_mysql.cnf:/etc/mysql/my.cnf
+
+    
+networks:
+  backend:
+    name: backend_network
+
