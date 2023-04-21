@@ -1,9 +1,14 @@
- #/bin/bash 
-# ./install_docker.sh
+#/bin/bash 
+# Ubuntu 20.04 amd64 install of docker
+# run with
+#    sudo ./install_docker.sh
+
+[[ "$EUID" -ne 0 ]] && echo "This script must be run as root e.g: sudo ./install_docker.sh" && exit 1
+
 
 # 1. Required dependencies 
-sudo apt-get update 
-sudo apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release 
+apt-get update -y
+apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release 
 
 # 2. GPG key 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg 
@@ -12,17 +17,17 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
 
 # 4. Install Docker 
-sudo apt-get update 
-sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+apt-get update 
+apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # 5. Add user to docker group 
-sudo groupadd docker 
-sudo usermod -aG docker $USER 
+groupadd docker 
+usermod -aG docker $USER 
 
 # 6. WSL2 Kernel do not support nftables causing docker to fail startup 
 # https://github.com/microsoft/WSL/issues/6655
-sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+update-alternatives --set iptables /usr/sbin/iptables-legacy
+update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
 # 7. Autostart
 echo 'if [ -n "`service docker status | grep not`" ]; then' >> ~/.profile
