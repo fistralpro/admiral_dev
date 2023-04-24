@@ -19,7 +19,7 @@ services:
     restart: always
 
     ports:
-      - ${MYSQL_PORT}:${MYSQL_PORT}
+      - 3306:3306
 
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
@@ -30,12 +30,11 @@ services:
     networks:
       - backend
 
-
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_ROOT_HOST: '%' # allow root login from any host
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_HOST: '%' 
+      MYSQL_ROOT_USER: 'root'
+
 
     volumes:
       - dev-datavolume:/var/lib/mysql
